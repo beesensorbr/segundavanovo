@@ -1,0 +1,270 @@
+---
+title: "Segunda VA - Computação para Análises de Dados(CPAD 2025)"
+author: "Leandro Queiroz"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    theme: readable
+    tabset: true
+    md_extensions: +raw_html
+  pdf_document:
+    toc: true
+    toc_depth: 2
+---
+
+<!-- ===================== ESTILOS CUSTOMIZADOS (CSS) ===================== -->
+<style>
+/* Fundo geral da página em gradiente suave */
+body {
+  background: linear-gradient(135deg, #f5f7fa, #e4ecf7);
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Esconde todo o cabeçalho padrão (título/autor/data) */
+#header {
+  display: none;
+}
+
+/* Banner principal */
+.banner-cpad {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding: 20px 28px;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #232f3e, #ff9900);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.38);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  color: #ffffff;
+}
+
+/* Área do logo dentro do banner */
+.banner-logo {
+  flex: 0 0 auto;
+}
+
+.banner-logo img {
+  max-height: 78px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.45);
+}
+
+/* Textos do banner */
+.banner-text {
+  flex: 1 1 auto;
+}
+
+.banner-text h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.9em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.banner-text h2 {
+  margin-top: 6px;
+  margin-bottom: 0;
+  font-size: 1.15em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+/* Cartão branco onde fica todo o conteúdo do relatório */
+.main-panel {
+  margin-top: 24px;
+  margin-bottom: 30px;
+  padding: 22px 26px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Cores dos títulos dentro do painel */
+.main-panel h1,
+.main-panel h2,
+.main-panel h3 {
+  color: #222c3c;
+}
+
+/* Links em azul agradável */
+a {
+  color: #1f6feb;
+}
+
+/* Estilo das abas (tabset) */
+.tabset > .nav-tabs {
+  border-bottom: 1px solid #d0d7de;
+}
+
+.tabset > .nav-tabs > li > a {
+  border-radius: 999px 999px 0 0;
+  border: none;
+  background: transparent;
+  padding: 8px 16px;
+  margin-right: 4px;
+  color: #495057;
+}
+
+.tabset > .nav-tabs > li.active > a,
+.tabset > .nav-tabs > li.active > a:focus,
+.tabset > .nav-tabs > li.active > a:hover {
+  background: linear-gradient(120deg, #ff9900, #f7c14b);
+  color: #222c3c;
+  border: none;
+}
+
+/* Área das tabs */
+.tabset > .tab-content {
+  margin-top: 16px;
+  padding: 12px 6px;
+  border-radius: 12px;
+}
+
+/* Blocos de código com cantos arredondados */
+pre, code {
+  border-radius: 8px !important;
+}
+</style>
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+# --- BLOCO DE CONFIGURAÇÃO E FUNÇÕES R ---
+
+# 1. Configuração do Mirror CRAN
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+
+# 2. Instalação e Carregamento de Pacotes
+pacotes <- c("tidyverse", "DT", "dplyr", "plotly", "stringr", "readr", "lubridate", "janitor", "knitr")
+# Instala e carrega pacotes se necessário
+for (pkg in pacotes) {
+  if (!requireNamespace(pkg, quietly = TRUE)) install.packages(pkg)
+  library(pkg, character.only = TRUE)
+}
+```
+
+<!-- ===================== BANNER PRINCIPAL ===================== -->
+
+```{r banner_html, echo=FALSE, results='asis'}
+html <- '
+<div class="banner-cpad">
+  <div class="banner-logo">
+    <img src="amazon_logo.png" alt="Logo Amazon">
+  </div>
+  <div class="banner-text">
+    <h1>Segunda VA - Computação para Análises de Dados (CPAD 2025)</h1>
+    <h2>ANÁLISE DE SENTIMENTO EM REVIEWS DE PRODUTOS DO SITE AMAZON</h2>
+  </div>
+</div>
+'
+
+cat(html)
+```
+
+<div class="main-panel">
+
+# ANÁLISE DE SENTIMENTO EM REVIEWS DE PRODUTOS DO SITE AMAZON {.tabset}
+
+## **Introdução** {.tabset}
+
+### **Introdução e Definição do Problema**
+
+O projeto visa realizar uma **Análise Exploratória de Dados avançada**, focada em **dados não estruturados** (texto), com o objetivo de contar uma narrativa coerente sobre a satisfação do consumidor.
+
+**Pergunta Central da Análise:**  
+A partir do conteúdo textual das avaliações, quais são os principais aspectos que influenciam a experiência do cliente, e como a percepção do produto evolui ao longo do tempo?
+
+Esta abordagem exige o uso de técnicas de **Text Mining e Processamento de Linguagem Natural (NLP)**, satisfazendo os requisitos de complexidade do projeto.
+
+## **Dataset e Estrutura** {.tabset}
+
+### **Escolha do Dataset e Estrutura**
+
+**Fonte:** Dataset de Reviews da Amazon (versão pública, como Kaggle ou UCSD). Tipo: dado não estruturado primariamente (o texto).
+
+**Justificativa Técnica (Requisitos do Projeto):**
+
+- O conjunto de dados contém vários tipos de dados (texto não estruturado, notas numéricas, IDs de caractere e datas Unix).
+- O campo **reviewText** (o corpo do review) é inerentemente não normalizado, contendo variações de caixa, erros gramaticais e pontuações inconsistentes, o que exige a etapa de **limpeza de dados**.
+
+## **Metodologia** {.tabset}
+
+### **Pré-Processamento e Engenharia de Features**
+
+Esta etapa é crucial para transformar o texto bruto em dados quantificáveis, atendendo diretamente aos requisitos de limpeza e criação de variáveis.
+
+**3.1. Limpeza e Organização dos Dados**
+
+- **Filtro:** A base será filtrada para focar em uma única categoria de produto (ex.: Eletroeletrônicos), tornando a análise específica e a história mais concisa.  
+- **Limpeza de Texto:** Remoção de pontuação, caracteres especiais e *stopwords* (palavras irrelevantes como "o", "a", "de").  
+- **Tokenização:** Quebra do texto em palavras ou grupos de palavras (*bigramas/trigramas*) para contagem de frequência e análise contextual.
+
+**3.2. Criação de Variáveis (Engenharia de Features)**
+
+Para ir além das variáveis originais, serão criadas variáveis que sustentam a análise:
+
+- **Polaridade de Sentimento:** Utilizando léxicos de sentimento (ex.: AFINN, Bing, NRC), será atribuída uma classificação ("Positivo", "Negativo" ou "Neutro") para cada review de texto, criando uma variável categórica nova.  
+- **Tendência Temporal:** A partir do *timestamp* original do review (`unixReviewTime`), será extraído o **Mês** e o **Ano** para permitir a análise da evolução do sentimento ao longo do tempo.
+
+**3.3. Pacotes Requeridos**
+
+Os principais pacotes utilizados neste projeto são:
+
+- `tidyverse`: manipulação e visualização de dados.  
+- `lubridate`: tratamento de datas.  
+- `janitor`: limpeza e padronização de nomes de colunas.  
+- `knitr` / `DT`: produção de tabelas estilizadas e interativas no relatório.
+
+```{r pacotes_exemplo, echo=TRUE, eval=FALSE}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(knitr)
+library(DT)
+```
+
+**3.4. Fonte dos Dados**
+
+Os dados utilizados neste trabalho foram coletados em uma plataforma pública de dados chamada **Kaggle**, que reúne datasets de diversas áreas com fins educacionais e de pesquisa.
+
+- Site: https://www.kaggle.com/  
+- Fonte específica do dataset: https://www.kaggle.com/datasets/kritanjalijain/amazon-reviews  
+- Arquivo utilizado: **train.csv**
+
+## **Análises** {.tabset}
+
+### **Análise Exploratória e Visualizações**
+
+A análise será focada em gerar insights que “contem a história” do produto, indo além de estatísticas descritivas simples e buscando padrões relevantes na experiência dos clientes.
+
+**4.1. Visualizações Chave e Gráficos Propostos**
+
+1. **Gráfico de Linha (Tendência Temporal)**  
+   Mostrar o **Sentimento Médio** (ou a proporção de reviews negativos) por mês/ano.  
+   *Insight:* revela picos de insatisfação (por exemplo, após uma atualização de firmware ou um novo lote de produção).
+
+2. **Gráfico de Barras (Contagem de Aspectos)**  
+   Geração de uma **nuvem de palavras** ou gráfico de barras mostrando as palavras mais frequentes, filtrando apenas os reviews negativos.  
+   *Insight:* identifica os pontos exatos de falha (ex.: "bateria", "aquecimento", "suporte").
+
+3. **Comparação Cruzada (Nota x Sentimento)**  
+   Gráfico de barras que compara a **nota numérica original** com a **polaridade de sentimento** calculada pelo algoritmo.  
+   *Exemplo:* “Quantos reviews com nota 3 foram classificados como Negativos?”
+
+## **Conclusão** {.tabset}
+
+### **Conclusão e Próximos Passos**
+
+**Conclusão da História**  
+O projeto não apenas relatará estatísticas, mas fornecerá uma **narração** sobre os aspectos de maior impacto na satisfação do consumidor da categoria analisada.
+
+**Limitações e Desafios**  
+Serão discutidas as limitações do modelo de sentimento (por exemplo, dificuldade em capturar **sarcasmo** ou **ironia**) e os desafios da limpeza de texto, que pode influenciar diretamente a qualidade das métricas.
+
+**Inovação**  
+A utilização de técnicas avançadas de **NLP** (tokenização, análise de sentimento léxica) representa o uso de métodos não abordados integralmente em sala de aula, adicionando valor à proposta e alinhando o trabalho com práticas contemporâneas de análise de dados em ambientes reais.
+
+</div>
